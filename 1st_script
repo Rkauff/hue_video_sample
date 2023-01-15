@@ -1,0 +1,22 @@
+
+import urllib.request
+import ssl
+import twilio_api_key
+
+hue_username = twilio_api_key.hue_username
+
+lights_data = 'https://<Your Hue Hub IP Address>/api/<Your Hue Username>/lights/<Your Light Number>'
+
+light_on_or_off = 'https://<Your Hue Hub IP Address>/api/<Your Hue Username>/lights/<Your Light Number>'/state'
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
+#changing the state of the lightbulb
+DATA = b'{"on":true}'
+BRIGHT = b'{"bri":255}'
+
+req = urllib.request.Request(url=light_on_or_off, data=BRIGHT, method="PUT")
+with urllib.request.urlopen(req) as light:
+    pass
+
+print(light.status)
