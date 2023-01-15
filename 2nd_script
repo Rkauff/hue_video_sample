@@ -1,0 +1,36 @@
+
+from urllib.request import urlopen as uReq
+from bs4 import BeautifulSoup as soup
+import ssl
+import json
+from twilio.rest import Client
+
+account_sid = <Your Twilio account_sid>
+auth_token = <Your Twilio auth_token>
+client = Client(account_sid, auth_token)
+
+hue_username = <Your Hue Username>
+sensor_data = f'https://<Your Hue Hub IP Address>/api/<Your Hue Username>/sensors/<Your Sensor number>'
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
+uClient = uReq(sensor_data)
+page_html = uClient.read()
+uClient.close()
+
+page_soup = soup(page_html, "html.parser")
+parser = json.loads(page_html)
+celsius = (parser['state']['temperature'])
+
+def c_to_f_conversion(celsius):
+    celsius = celsius/100
+    t = (celsius * 1.8 + 32)
+    return t
+    print(t)
+    
+fahrenheit = round(c_to_f_conversion(celsius),0)
+
+client.messages.create(
+    to=<The number to send a text to>,
+    from_=<Your Twilio Number>,
+    body="The temperature in the basement is " + str(fahrenheit))
